@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'keyboard_control = publishers.keyboard_control:main'
+            'keyboard_control = publishers.keyboard_control:main',
+            'joy_control = publishers.joystick_control:main',
         ],
     },
 )

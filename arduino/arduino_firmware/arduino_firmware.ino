@@ -4,8 +4,8 @@
 
 IBT lw(2,3);
 IBT rw(4,5);
-IBT rf(6,7);
-IBT rb(8,9);
+// IBT rf(6,7);
+// IBT rb(8,9);
 
 String receivedData = "";
 
@@ -24,10 +24,9 @@ void process_vel(double linear, double angular){
   pwm_l = map(r_wheel_vel,-max_speed,max_speed,-200,200);
   pwm_r = map(l_wheel_vel,-max_speed,max_speed,-200,200);
 
-  lf.setRawSpeed(pwm_l);
-  lb.setRawSpeed(pwm_l);
-  rf.setRawSpeed(-pwm_r);
-  rb.setRawSpeed(-pwm_r);
+  lw.setRawSpeed(pwm_l);
+  rw.setRawSpeed(-pwm_r);
+  Serial.print("L: "+String(pwm_l)+" R: "+String(-pwm_r));
 }
 
 
