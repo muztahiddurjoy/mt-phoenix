@@ -5,10 +5,10 @@ from geometry_msgs.msg import Twist
 import time
 
 
-def map_value(value):
-    if value < -1 or value > 1:
+def map_value(value,max):
+    if value < -1.0 or value > 1.0:
         raise ValueError("Input value should be in the range [-1, 1]")
-    mapped_value = int(((value + 1) / 2) * 255)
+    mapped_value = float(((value + 1) / 2) * max)
     return mapped_value
 
 
@@ -16,7 +16,7 @@ def map_value(value):
 class MinimalSubscriber(Node):
 
     def __init__(self):
-        super().__init__('minimal_subscriber')
+        super().__init__('logitech_joystick_control')
         self._logger.info('Mongoltori is ready to take joystick command')
         self.subscription = self.create_subscription(
             Joy,
@@ -30,29 +30,28 @@ class MinimalSubscriber(Node):
 
     def listener_callback(self, msg):
         rover_msg = Twist()
-        x_axis = msg.axes[2]
+        x_axis = msg.axes[0]
         y_axis = msg.axes[1]
-        base_threshold = map_value(msg.axes[3])
+        # base_threshold = map_value(msg.axes[3])
         linear_threshold = 45.0
-        angular_threshold = 7.0
-        clutch1 = msg.buttons[6]
-        clutch2 = msg.buttons[7]
+        angular_threshold = 8.0
+        clutch = msg.buttons[0]
 
-        if(clutch1==1 and clutch2==1):
-            if(y_axis > 0.5):
-                rover_msg.linear.x = linear_threshold
+        if(clutch==1):
+            if(y_axis > 0.05):
+                rover_msg.linear.x = map_value(y_axis,100)
                 self.get_logger().info('Rover should forward')
             elif (y_axis < -0.5):
-                rover_msg.linear.x = -linear_threshold
+                rover_msg.linear.x = -map_value(-y_axis,100)
                 self.get_logger().info('Rover should backward')
             else:
                 rover_msg.linear.x = 0.0
                 
-            if(x_axis < -0.5):
-                rover_msg.angular.z = angular_threshold
+            if(x_axis < -0.05):
+                rover_msg.angular.z = map_value(-x_axis,10)
                 self.get_logger().info('Rover should turn right')
             elif(x_axis > 0.5):
-                rover_msg.angular.z = -angular_threshold
+                rover_msg.angular.z = -map_value(x_axis,10)
                 self.get_logger().info('Rover should turn left')
             else:
                 rover_msg.angular.z = 0.0

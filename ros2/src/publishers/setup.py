@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'keyboard_control = publishers.keyboard_control:main',
-            'joy_control = publishers.joystick_control:main',
+            'wireless_joy_control = publishers.joysticks.wireless_joystick_control:main',
+            'logitech_joy_control = publishers.joysticks.logitech_joystick_control:main',
         ],
     },
 )
